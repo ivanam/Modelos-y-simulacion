@@ -1,2 +1,12 @@
-# MyS2017
-Repo para la materia modelos y simulacion 2017
+# Modelos y Simulacion 2017
+
+Requerimientos
+Jupyter notebook http://jupyter.org/install.html
+scipy
+numpy
+matplotlib
+
+
+Ejecutar .ipynb
+
+jupyter notebook <nombre>.ipynb
