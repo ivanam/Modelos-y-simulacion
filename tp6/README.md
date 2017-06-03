@@ -31,6 +31,6 @@ Simular 30 anios con 250 dias habiles cada uno, calcule:
     $sudo pip install -r requirements.txt
 
 ## Iniciar la aplicacion ##
-    $jupyter notebook tp6.ipynb 
-
+    $ chmod 755 start.sh
+    $ ./start.sh
 
