@@ -122,9 +122,13 @@ class Simulacion:
 
 	ESTADOS = ['nada', 'configurada', 'iniciada', 'finalizada']
 	
-	def __init__(self):
-		self.estado = 'nada'
-		self.response = []	
+	def __init__(self, default=False):
+		if default:
+			with open('config.json') as json_config:
+				self.configurar(json.load(json_config))
+		else:
+			self.estado = 'nada'
+		self.response = []
 
 	def configurar(self, json_config):
 		self.dias_mes = json_config['dias_mes']

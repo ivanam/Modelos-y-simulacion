@@ -1,84 +1,145 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import math
-        
-DIAS_MES = 30
-MESES = 12 # anio
-CANT_MUESTRAS = 1
+# -*- coding: utf-8 -*-
 
-PRODUCCION = {
-    'dias': 15,
-    'auto_parte_1': 110,
-    'auto_parte_2': 160    
-}
-DEMANDA = {
-    'funcion': np.random.poisson,
-    'parametros': {'lam': 70}    
-}
-EMPLEADOS = {
-    'cantidad': 2,
-    'horas_trabajo':12,  # ponemos que trabajan 12 horas diarias atendiendo demandas
-    'funcion': np.random.poisson,
-    'auto_parte_1': 8,
-    'auto_parte_2': 12
-}
-cola_de_pedido = []
+# Form implementation generated from reading ui file 'simulacion.ui'
+#
+# Created by: PyQt4 UI code generator 4.11.4
+#
+# WARNING! All changes made in this file will be lost!
 
+from PyQt4 import QtCore, QtGui
 
-# En base a la cant de horas de trabajo y de la funcion de tiempo aleatorio de atencion de demanda:
-# devuelvo la cantidad de demandas que puede procesra en un dia para auto parte 1 y autoparte 2.
-def getCantDemandaEmpleado():
-    total_minutos = EMPLEADOS['horas_trabajo'] * 60
-    cant_demanda_1 = EMPLEADOS['funcion'](total_minutos/EMPLEADOS['auto_parte_1'])
-    cant_demanda_2 = EMPLEADOS['funcion'](total_minutos/EMPLEADOS['auto_parte_2'])
-    return cant_demanda_1, cant_demanda_2
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
 
-# retorno una lista L con cant de demandas para cada empleado. len(L) == cantidad de empleados
-def getCantDemandasEmpleados():
-    cant_demandas_atender = []
-    return [min(getCantDemandaEmpleado()) for i in range(EMPLEADOS['cantidad'])]
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
-def main():    
-    for i in range(CANT_MUESTRAS):
-        cola_de_pedidos = [{'dia':0, 'mes':1, 'acumulado':0}]
-        stock_autoparte_1 = stock_autoparte_2 =  0
-        for mes in range(1, MESES + 1):
-            for dia in range(1, DIAS_MES + 1 ):
-                if dia < PRODUCCION['dias']:
-                    stock_autoparte_1 += PRODUCCION['auto_parte_1']        
-                    stock_autoparte_2 += PRODUCCION['auto_parte_2']
-                cant_acumulada = cola_de_pedidos[len(cola_de_pedidos) - 1]['acumulado']
-                demanda_aleatoria = DEMANDA['funcion'](**DEMANDA['parametros'])
-                total_demanda_diaria = demanda_aleatoria + cant_acumulada
-                cant_demandas_empleados = sum(getCantDemandasEmpleados())
-                cant_demandas_satisfechas = min(stock_autoparte_1, stock_autoparte_2, total_demanda_diaria, cant_demandas_empleados)
-                stock_autoparte_1 -= cant_demandas_satisfechas
-                stock_autoparte_2 -= cant_demandas_satisfechas
-                total_demanda_diaria -= cant_demandas_satisfechas
-                cola_de_pedidos.append({'dia': dia, 
-                                        'mes': mes, 
-                                        'acumulado': total_demanda_diaria,
-                                        'stock_autoparte_1':stock_autoparte_1,
-                                        'stock_autoparte_2':stock_autoparte_2
-                                       })
-        for cola in cola_de_pedidos: print cola
-        mostrar_promedios(cola_de_pedidos[1:])
-        
-def mostrar_promedios(cola_de_pedidos):
-    print "/////// INICIO SIMULACION ///////"
-    print "Cantidad total de dias %d"%(len(cola_de_pedidos))
-    print "Cantidad total acumulada %d"%(sum(map( lambda dia: dia['acumulado'],cola_de_pedidos)))
-    print "Promedio acumulado por dia %d"%(np.average(map(lambda dia: dia['acumulado'],cola_de_pedidos)))
-    print "Cantidad de de dias con Demoras por empleados %d"%(len(demoras_empleados(cola_de_pedidos)))
-    print "Cantidades demandas sin atender por demoras de empleados %s"%(sum(demoras_empleados(cola_de_pedidos)))
-    
-def demoras_empleados(cola_de_pedidos):
-    return [res for res in map(demora_empleados_en, cola_de_pedidos) if res > 0]
+class Ui_Form(object):
+    def setupUi(self, Form):
+        Form.setObjectName(_fromUtf8("Form"))
+        Form.resize(621, 556)
+        self.verticalLayout = QtGui.QVBoxLayout(Form)
+        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.groupBox_2 = QtGui.QGroupBox(Form)
+        self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
+        self.gridLayout_3 = QtGui.QGridLayout(self.groupBox_2)
+        self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
+        self.label_3 = QtGui.QLabel(self.groupBox_2)
+        self.label_3.setObjectName(_fromUtf8("label_3"))
+        self.gridLayout_3.addWidget(self.label_3, 0, 0, 1, 1)
+        self.label_4 = QtGui.QLabel(self.groupBox_2)
+        self.label_4.setObjectName(_fromUtf8("label_4"))
+        self.gridLayout_3.addWidget(self.label_4, 1, 0, 1, 1)
+        self.lblDemandaAcumulada = QtGui.QLabel(self.groupBox_2)
+        self.lblDemandaAcumulada.setObjectName(_fromUtf8("lblDemandaAcumulada"))
+        self.gridLayout_3.addWidget(self.lblDemandaAcumulada, 0, 1, 1, 1)
+        self.lblDemandaDiaria = QtGui.QLabel(self.groupBox_2)
+        self.lblDemandaDiaria.setObjectName(_fromUtf8("lblDemandaDiaria"))
+        self.gridLayout_3.addWidget(self.lblDemandaDiaria, 1, 1, 1, 1)
+        self.lblEventoDemandaDiaria = QtGui.QLabel(self.groupBox_2)
+        self.lblEventoDemandaDiaria.setText(_fromUtf8(""))
+        self.lblEventoDemandaDiaria.setObjectName(_fromUtf8("lblEventoDemandaDiaria"))
+        self.gridLayout_3.addWidget(self.lblEventoDemandaDiaria, 1, 2, 1, 1)
+        self.lvlEventoDemandaAcumulada = QtGui.QLabel(self.groupBox_2)
+        self.lvlEventoDemandaAcumulada.setText(_fromUtf8(""))
+        self.lvlEventoDemandaAcumulada.setObjectName(_fromUtf8("lvlEventoDemandaAcumulada"))
+        self.gridLayout_3.addWidget(self.lvlEventoDemandaAcumulada, 0, 2, 1, 1)
+        self.verticalLayout.addWidget(self.groupBox_2)
+        self.gridLayout = QtGui.QGridLayout()
+        self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.groupBox = QtGui.QGroupBox(Form)
+        self.groupBox.setObjectName(_fromUtf8("groupBox"))
+        self.gridLayout_2 = QtGui.QGridLayout(self.groupBox)
+        self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
+        self.lblEventoSockAutoparte1 = QtGui.QLabel(self.groupBox)
+        self.lblEventoSockAutoparte1.setObjectName(_fromUtf8("lblEventoSockAutoparte1"))
+        self.gridLayout_2.addWidget(self.lblEventoSockAutoparte1, 0, 2, 1, 1)
+        self.label_2 = QtGui.QLabel(self.groupBox)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.gridLayout_2.addWidget(self.label_2, 1, 0, 1, 1)
+        self.lblStockAutoparte2 = QtGui.QLabel(self.groupBox)
+        self.lblStockAutoparte2.setObjectName(_fromUtf8("lblStockAutoparte2"))
+        self.gridLayout_2.addWidget(self.lblStockAutoparte2, 1, 1, 1, 1)
+        self.lblStockAutoparte1 = QtGui.QLabel(self.groupBox)
+        self.lblStockAutoparte1.setObjectName(_fromUtf8("lblStockAutoparte1"))
+        self.gridLayout_2.addWidget(self.lblStockAutoparte1, 0, 1, 1, 1)
+        self.lblEventoAutoparte2l = QtGui.QLabel(self.groupBox)
+        self.lblEventoAutoparte2l.setObjectName(_fromUtf8("lblEventoAutoparte2l"))
+        self.gridLayout_2.addWidget(self.lblEventoAutoparte2l, 1, 2, 1, 1)
+        self.label = QtGui.QLabel(self.groupBox)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.gridLayout_2.addWidget(self.label, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.groupBox, 0, 0, 1, 1)
+        self.verticalLayout.addLayout(self.gridLayout)
+        self.groupBox_3 = QtGui.QGroupBox(Form)
+        self.groupBox_3.setObjectName(_fromUtf8("groupBox_3"))
+        self.gridLayout_5 = QtGui.QGridLayout(self.groupBox_3)
+        self.gridLayout_5.setObjectName(_fromUtf8("gridLayout_5"))
+        self.lblStockAutoparte2_3 = QtGui.QLabel(self.groupBox_3)
+        self.lblStockAutoparte2_3.setObjectName(_fromUtf8("lblStockAutoparte2_3"))
+        self.gridLayout_5.addWidget(self.lblStockAutoparte2_3, 1, 1, 1, 1)
+        self.lblEventoStockAutoparte1 = QtGui.QLabel(self.groupBox_3)
+        self.lblEventoStockAutoparte1.setObjectName(_fromUtf8("lblEventoStockAutoparte1"))
+        self.gridLayout_5.addWidget(self.lblEventoStockAutoparte1, 0, 2, 1, 1)
+        self.label_8 = QtGui.QLabel(self.groupBox_3)
+        self.label_8.setObjectName(_fromUtf8("label_8"))
+        self.gridLayout_5.addWidget(self.label_8, 0, 0, 1, 1)
+        self.label_9 = QtGui.QLabel(self.groupBox_3)
+        self.label_9.setObjectName(_fromUtf8("label_9"))
+        self.gridLayout_5.addWidget(self.label_9, 1, 0, 1, 1)
+        self.lblStockAutoparte1_3 = QtGui.QLabel(self.groupBox_3)
+        self.lblStockAutoparte1_3.setObjectName(_fromUtf8("lblStockAutoparte1_3"))
+        self.gridLayout_5.addWidget(self.lblStockAutoparte1_3, 0, 1, 1, 1)
+        self.lblEventoStockAutoparte2 = QtGui.QLabel(self.groupBox_3)
+        self.lblEventoStockAutoparte2.setObjectName(_fromUtf8("lblEventoStockAutoparte2"))
+        self.gridLayout_5.addWidget(self.lblEventoStockAutoparte2, 1, 2, 1, 1)
+        self.verticalLayout.addWidget(self.groupBox_3)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.label_15 = QtGui.QLabel(Form)
+        self.label_15.setObjectName(_fromUtf8("label_15"))
+        self.horizontalLayout.addWidget(self.label_15)
+        self.lblDiaMesAnio = QtGui.QLabel(Form)
+        self.lblDiaMesAnio.setObjectName(_fromUtf8("lblDiaMesAnio"))
+        self.horizontalLayout.addWidget(self.lblDiaMesAnio)
+        self.lblDiaMesAnioFinal = QtGui.QLabel(Form)
+        self.lblDiaMesAnioFinal.setObjectName(_fromUtf8("lblDiaMesAnioFinal"))
+        self.horizontalLayout.addWidget(self.lblDiaMesAnioFinal)
+        self.verticalLayout.addLayout(self.horizontalLayout)
 
-#retorno cantidad de demandas insatisfechas en un dia por demoras de empleados.
-def demora_empleados_en(dia):
-    return min(min(dia['stock_autoparte_1'], dia['stock_autoparte_2']), dia['acumulado'])   
-    
-if __name__ == '__main__':
-    main()
-    
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def retranslateUi(self, Form):
+        Form.setWindowTitle(_translate("Form", "Form", None))
+        self.groupBox_2.setTitle(_translate("Form", "Demanda", None))
+        self.label_3.setText(_translate("Form", "Acumulada", None))
+        self.label_4.setText(_translate("Form", "Diaria", None))
+        self.lblDemandaAcumulada.setText(_translate("Form", "100", None))
+        self.lblDemandaDiaria.setText(_translate("Form", "20", None))
+        self.groupBox.setTitle(_translate("Form", "Deposito", None))
+        self.lblEventoSockAutoparte1.setText(_translate("Form", "+ 160 ", None))
+        self.label_2.setText(_translate("Form", "autoparte 2", None))
+        self.lblStockAutoparte2.setText(_translate("Form", "1500", None))
+        self.lblStockAutoparte1.setText(_translate("Form", "2000", None))
+        self.lblEventoAutoparte2l.setText(_translate("Form", "+ 110", None))
+        self.label.setText(_translate("Form", "autoparte 1", None))
+        self.groupBox_3.setTitle(_translate("Form", "Empleados", None))
+        self.lblStockAutoparte2_3.setText(_translate("Form", "1500", None))
+        self.lblEventoStockAutoparte1.setText(_translate("Form", "+ 160 ", None))
+        self.label_8.setText(_translate("Form", "autoparte 1", None))
+        self.label_9.setText(_translate("Form", "autoparte 2", None))
+        self.lblStockAutoparte1_3.setText(_translate("Form", "2000", None))
+        self.lblEventoStockAutoparte2.setText(_translate("Form", "+ 123", None))
+        self.label_15.setText(_translate("Form", "Dia", None))
+        self.lblDiaMesAnio.setText(_translate("Form", "1 / 2 / 1 ", None))
+        self.lblDiaMesAnioFinal.setText(_translate("Form", "30 - 12 - 5", None))
+
