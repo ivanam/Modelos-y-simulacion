@@ -1,0 +1,1 @@
+ejecutar qt designer-qt4
