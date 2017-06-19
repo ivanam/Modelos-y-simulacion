@@ -255,8 +255,16 @@ class TestSimulacion(unittest.TestCase):
 					c = s.keys()[0]
 					self.assertTrue(c in nombres)
 					self.assertTrue(type(s[c]) == int)
-				
-					
+	
+	def test_set_tiempos_atencion_empl(self):
+		s = self.simulacion
+		self.assertTrue(s.estado == 'configurado')
+		s.set_tiempos_atencion(2, 4)
+		params = [{'lam':2}, {'lam':4}]
+		parametros_atenciones = [a.parametros for e in s.empleados for a in e.atenciones]
+		self.assertTrue(all(map(lambda p: p['lam'] == 360 or p['lam']==180, parametros_atenciones)))
+		
+	
 
 	def test_response_cant_eventos_anios_iniciar_simulacion(self):
 		s = self.simulacion

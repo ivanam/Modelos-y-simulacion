@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 import sys
 from PyQt4 import QtCore, QtGui
-from main import Ui_MainWindow
+from forms.main import Ui_MainWindow
 import json
 from modelos import *
-from simulacion import Ui_Form
+from forms import simulacion
+from dialogs import simulacion
 
 class Main(QtGui.QMainWindow):
     """docstring for Main"""
@@ -18,28 +19,28 @@ class Main(QtGui.QMainWindow):
 
     def obtener_config(self):
 
-        cantAnios = self.ui.inputCantAnios.text()
-        mesesAnios = self.ui.inputMesesAnio.text()
-        diasAnios = self.ui.cantDiasAnios.text()
-        horasDias = self.ui.cantHorasDia.text()
-        cantDiasProduccion = self.ui.cantDiasProduccion.text()
-        cantEmpleados = self.ui.inputCantEmpleados.text()
-        tiempoAtencion1 = self.ui.inputTiempoAtencion1.text()
-        tiempoAtencion2 = self.ui.inputTiempoAtencion2.text()
+        cantAnios = int(self.ui.inputCantAnios.text())
+        mesesAnios = int(self.ui.inputMesesAnio.text())
+        diasAnios = int(self.ui.cantDiasAnios.text())
+        horasDias = int(self.ui.cantHorasDia.text())
+        cantDiasProduccion = int(self.ui.cantDiasProduccion.text())
+        cantEmpleados = int(self.ui.inputCantEmpleados.text())
+        tiempoAtencion1 = int(self.ui.inputTiempoAtencion1.text())
+        tiempoAtencion2 = int(self.ui.inputTiempoAtencion2.text())
         
         sim = Simulacion(default=True)
-        sim.cantAnios = cantAnios
-        sim.cantAnios = mesesAnios
-        sim.cantAnios = diasAnios
-        sim.cantAnios = horasDias
-        sim.cantAnios = cantDiasProduccion
-        sim.cantAnios = cantEmpleados
-        sim.cantAnios = tiempoAtencion1
-        sim.cantAnios = tiempoAtencion2
-        Form = Simulacion()
-        Form.show()
-        sys.exit(app.exec_())
-    	
+        sim.cant_anios = cantAnios
+        sim.meses_anio = mesesAnios
+        sim.dias_mes = diasAnios
+        sim.horas_trabajo = horasDias
+        sim.dias_produccion = cantDiasProduccion
+        #sim.cantAnios = cantEmpleados
+        sim.set_tiempos_atencion(tiempoAtencion1, tiempoAtencion2) 
+        if sim.estado == 'configurado':
+            res = sim.iniciar()
+            d = simulacion.form_simulacion(res)
+            d.exec_()
+        print "Error en la configuracion"
 
     def config_defecto(self):
 

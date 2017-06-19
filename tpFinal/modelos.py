@@ -59,8 +59,14 @@ class Atencion:
 	def cantidad_atender(self):
 		return self.funcion(**self.parametros)
 
+	def set_parametros(self, lam):
+		self.parametros['lam'] = float(self.unidad_tiempo) / lam
+
 
 class Estadisticas:
+
+	def __init__(self):
+		self.estadisticas = None
 
 	def init_response(self):
 		return {
@@ -83,13 +89,14 @@ class Estadisticas:
 			for e in dict_anio['eventos']:
 				stats_anio['cant_total_acumulada'] += e['acumulado']
 				stats_anio['total_demandas'] += e['demanda']
-				stats_anio['demandas_insatisfechas'] = min(e['demanda'], e['acumulado'])			
+				demandas_insatisfechas = min(e['demanda'], e['acumulado'])
+				stats_anio['demandas_insatisfechas'] += demandas_insatisfechas
 				if self.falto_stock(e):
 					stats_anio['cant_dias_falta_stock'] += 1 
-					stats_anio['cant_demandas_sin_atender_por_falta_stock'] += stats_anio['demandas_insatisfechas']
+					stats_anio['cant_demandas_sin_atender_por_falta_stock'] += demandas_insatisfechas
 				if self.demora_empleados(e):
 					stats_anio['cant_dias_demoras_empl'] += 1 
-					stats_anio['cant_demandas_sin_atender_por_demoras_empl'] += stats_anio['demandas_insatisfechas']
+					stats_anio['cant_demandas_sin_atender_por_demoras_empl'] += demandas_insatisfechas
 			stats_anio['prom_acumulado_por_dia'] = stats_anio['cant_total_acumulada'] / len(dict_anio['eventos'])
 			respuestas.append(stats_anio)
 			stats_anio = self.init_response()
@@ -104,12 +111,11 @@ class Estadisticas:
 			"total_dias": int(np.average(map(lambda s: len(s['eventos']),result['simulacion']))),
 			"promedio_total_demandas": int(np.average(map(lambda r: r['total_demandas'],respuestas)))
 		}
-		
-
-		return {
+		self.estadisticas = {
 			'promedios_por_anios':respuestas,
 			'promedios_totales':promedios
 		}
+		return self.estadisticas
 
 	def falto_stock(self, evento):
 		return  evento['acumulado'] > 0 and min(map(lambda p: p.values()[0], evento['stock'])) == 0
@@ -117,6 +123,9 @@ class Estadisticas:
 	def demora_empleados(self, evento):
 		return evento['acumulado'] > 0 and min(map(lambda p: p.values()[0], evento['stock'])) > 0
 
+	def getEstadisticasPdf(self):
+		if self.estadisticas:
+			pass
 
 class Simulacion:
 
@@ -139,7 +148,6 @@ class Simulacion:
 		self.empleados = []
 		self.productos = []
 		self.produccion = []
-
 		self.demanda = Demanda(eval(json_config['demanda']['funcion']), json_config['demanda']['parametros'])
 		
 		for i in range(json_config['empleados']['cantidad']):
@@ -157,12 +165,23 @@ class Simulacion:
 		self.estado = 'configurado'
 		return 'ok'
 
+	def set_tiempos_atencion(self, t1, t2):
+		assert self.estado == 'configurado', "Debe configurar la simulacion antes de modificar parametros"
+		param1 = {'lam': t1}
+		param2 = {'lam': t2}
+		for empleado in self.empleados:
+			assert len(empleado.atenciones) == 2, "Error Se configuraron mas de 2 productos"
+			empleado.atenciones[0].set_parametros(t1)
+			empleado.atenciones[1].set_parametros(t2)
+
 	def iniciar(self):
 		self.response = {
-			"simulacion":[]
+			"simulacion":[],
+			'dias_produccion':self.dias_produccion
 		}
 		for anio in range(1, self.cant_anios + 1):
-			cola = {'anio':anio, 'eventos':[]}
+			stock = [{p.nombre:p.stock} for p in self.productos]
+			cola = {'anio':anio, 'eventos':[{'acumulado':0, 'demanda':0, 'dia':"0 - 1", 'stock':stock }]}
 			for mes in range(1, self.meses_anio + 1):
 				for dia in range(1, self.dias_mes + 1):
 					# el acum dia anterior o cero
@@ -178,6 +197,7 @@ class Simulacion:
 					stock = [{p.nombre:p.stock} for p in self.productos]
 					cola['eventos'].append({
 						'acumulado':acum_dia,
+						'satisfecho':satisfecho,
 						'demanda':demanda_random,
 						'dia': "%d - %d"%(dia, mes),
 						'stock':stock
