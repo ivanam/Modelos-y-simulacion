@@ -149,7 +149,9 @@ class Simulacion:
 		self.productos = []
 		self.produccion = []
 		self.demanda = Demanda(eval(json_config['demanda']['funcion']), json_config['demanda']['parametros'])
-		
+		self.t1 = json_config['productos'][0]['parametros']['lam'] #add
+		self.t2 = json_config['productos'][1]['parametros']['lam'] #add
+
 		for i in range(json_config['empleados']['cantidad']):
 			self.empleados.append(Empleado())
 
@@ -177,7 +179,15 @@ class Simulacion:
 	def iniciar(self):
 		self.response = {
 			"simulacion":[],
-			'dias_produccion':self.dias_produccion
+			'dias_produccion':self.dias_produccion,
+			'anios': self.cant_anios , # add
+			'meses': self.meses_anio , # add
+			'dias': self.dias_mes , # add
+			'horas_prod': self.horas_trabajo, # add
+			'dias_prod': self.dias_produccion, # add
+			'cant_emp': 2, # add
+			't1': self.t1, # add
+			't2': self.t2 # add
 		}
 		for anio in range(1, self.cant_anios + 1):
 			stock = [{p.nombre:p.stock} for p in self.productos]

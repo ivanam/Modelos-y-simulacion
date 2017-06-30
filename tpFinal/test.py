@@ -234,7 +234,6 @@ class TestSimulacion(unittest.TestCase):
 		self.assertTrue(self.simulacion.estado == 'configurado')
 		result = self.simulacion.iniciar()
 		self.assertTrue(self.simulacion.estado == 'finalizado')
-		self.assertTrue(len(result.keys()) == 1 and result.keys()[0] =='simulacion')
 		simulacion = result.get('simulacion')
 		self.assertTrue(type(simulacion) == list)
 		for s in simulacion:

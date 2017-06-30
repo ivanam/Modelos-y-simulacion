@@ -1,3 +1,0 @@
-
-
-designer-qt4

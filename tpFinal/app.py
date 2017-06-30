@@ -34,6 +34,8 @@ class Main(QtGui.QMainWindow):
         sim.dias_mes = diasAnios
         sim.horas_trabajo = horasDias
         sim.dias_produccion = cantDiasProduccion
+        sim.t1 = tiempoAtencion1  # add
+        sim.t2 = tiempoAtencion2  # add
         #sim.cantAnios = cantEmpleados
         sim.set_tiempos_atencion(tiempoAtencion1, tiempoAtencion2) 
         if sim.estado == 'configurado':
