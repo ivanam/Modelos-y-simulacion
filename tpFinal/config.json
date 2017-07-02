@@ -1,0 +1,38 @@
+{
+	"dias_mes": 30,
+	"meses_anio": 12,
+	"cant_anios": 5,
+	"productos":[
+		{
+			"nombre": "auto_parte_1",
+			"stock": 0,
+			"produccion_por_dia": 110,
+			"funcion_tiempo_atencion": "np.random.poisson",
+			"parametros": {
+				"lam":12
+			}
+		},
+		{
+			"nombre": "auto_parte_2",
+			"stock": 0,
+			"produccion_por_dia": 160,
+			"funcion_tiempo_atencion": "np.random.poisson",
+			"parametros": {
+				"lam":8
+			}
+		}
+	],
+	"dias_produccion": 15,
+	"empleados":{
+		"cantidad":2,
+		"horas_trabajo": 12
+	},
+	"demanda":{
+		"funcion": "np.random.poisson",
+		"parametros": {
+			"lam":70
+		}
+	}	
+}
+
+
