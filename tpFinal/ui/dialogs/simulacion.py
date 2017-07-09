@@ -7,12 +7,12 @@ import time
 from modelos import Estadisticas
 from pdf import GeneradorPdf
 from estadisticas import EstadisticasPlot
-
+from settings import PATH_CONFIG_DEFAULT, PATH_STORE_PDF
 class form_simulacion(QtGui.QDialog):
 
     DT_MS = 1000
 
-    def __init__(self, json_simulacion):
+    def __init__(self, json_simulacion, path_default):
         QtGui.QDialog.__init__(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
@@ -22,6 +22,7 @@ class form_simulacion(QtGui.QDialog):
         self.i_anio = 0
         self.i_evento = 0
         self.timer = self.crear_timer()
+        self.path_default = path_default
         #eventos 
         self.ui.btnPararSim.clicked.connect(self.parar_simulacion)
         self.ui.btnContinuarSim.clicked.connect(self.iniciar_timer)
@@ -52,7 +53,7 @@ class form_simulacion(QtGui.QDialog):
             't2': self.sim.get('t2')
         }
 
-        g = GeneradorPdf(configuracion, self.estadisticas).getPdf()
+        g = GeneradorPdf(configuracion, self.estadisticas, self.path_default).getPdf(PATH_STORE_PDF)
         print "PDF GENERADO"
         self.estadisticasPlot()
 

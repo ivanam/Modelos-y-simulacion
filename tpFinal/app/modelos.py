@@ -1,5 +1,7 @@
 import numpy as np
 import json
+import os
+
 
 class Producto:
 	def __init__(self, nombre, stock=0):
@@ -131,9 +133,9 @@ class Simulacion:
 
 	ESTADOS = ['nada', 'configurada', 'iniciada', 'finalizada']
 	
-	def __init__(self, default=False):
-		if default:
-			with open('config.json') as json_config:
+	def __init__(self, path_default=False):
+		if path_default:
+			with open(path_default) as json_config:
 				self.configurar(json.load(json_config))
 		else:
 			self.estado = 'nada'

@@ -1,12 +1,17 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
+import os
+BASE_PATH = os.path.abspath('../app')
+sys.path.insert(1, BASE_PATH)
+
 from PyQt4 import QtCore, QtGui
 from forms.main import Ui_MainWindow
 import json
 from modelos import *
 from forms import simulacion
 from dialogs import simulacion
+from settings import PATH_CONFIG_DEFAULT
 
 class Main(QtGui.QMainWindow):
     """docstring for Main"""
@@ -28,7 +33,7 @@ class Main(QtGui.QMainWindow):
         tiempoAtencion1 = int(self.ui.inputTiempoAtencion1.text())
         tiempoAtencion2 = int(self.ui.inputTiempoAtencion2.text())
         
-        sim = Simulacion(default=True)
+        sim = Simulacion(path_default=PATH_CONFIG_DEFAULT)
         sim.cant_anios = cantAnios
         sim.meses_anio = mesesAnios
         sim.dias_mes = diasAnios
@@ -40,13 +45,13 @@ class Main(QtGui.QMainWindow):
         sim.set_tiempos_atencion(tiempoAtencion1, tiempoAtencion2) 
         if sim.estado == 'configurado':
             res = sim.iniciar()
-            d = simulacion.form_simulacion(res)
+            d = simulacion.form_simulacion(res, PATH_CONFIG_DEFAULT)
             d.exec_()
         print "Error en la configuracion"
 
     def config_defecto(self):
 
-        with open('config.json') as data_file:    
+        with open(PATH_CONFIG_DEFAULT) as data_file:    
             config = json.load(data_file)
         self.ui.inputCantAnios.setText(str(config['cant_anios']))
         self.ui.inputMesesAnio.setText(str(config['meses_anio']))

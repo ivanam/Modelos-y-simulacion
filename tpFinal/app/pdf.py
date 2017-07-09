@@ -7,15 +7,17 @@ from modelos import *
 
 class GeneradorPdf:
 
-    def __init__(self, configuracion, estadisticas = None):
+    def __init__(self, configuracion, estadisticas = None, path_default=None):
         self.promedios = estadisticas.get('promedios_totales')
         self.configuracion = configuracion # add
+        self.path_default = path_default
 
-    def getPdf(self):
-        assert self.promedios
+    def getPdf(self, path_store_pdf):
+        assert self.promedios, "Debe setear los promedios para imprimirlos"
+        assert path_store_pdf, "Debe indicar una ruta para guardar los pdf generados"
         
         fecha = datetime.datetime.now()
-        nombrePdf = "./pdf/simulacion_%d%d%d%d%d%d.pdf"%(fecha.year,fecha.month,fecha.day,fecha.hour,fecha.minute,fecha.second)
+        nombrePdf = "%ssimulacion_%d%d%d%d%d%d.pdf"%(path_store_pdf,fecha.year,fecha.month,fecha.day,fecha.hour,fecha.minute,fecha.second)
 
         with PdfPages(nombrePdf) as pdf:
 
@@ -61,7 +63,7 @@ class GeneradorPdf:
             plt.close()
 
             # genero estadistica con param por defecto
-            result_defecto = Simulacion(default=True).iniciar()
+            result_defecto = Simulacion(self.path_default).iniciar()
             estadisticas_defecto = Estadisticas().getEstadisticas(result_defecto)
             promedios_defecto = estadisticas_defecto.get('promedios_totales')
 

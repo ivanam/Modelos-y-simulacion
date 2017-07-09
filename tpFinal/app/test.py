@@ -1,10 +1,13 @@
+import os
+import sys
+BASE_PATH = os.path.abspath('..')
+sys.path.insert(1, BASE_PATH)
 import unittest
-from  modelos import * 
+from  app.modelos import * 
 import random
 import json
 import ast
 import numpy as np
-
 
 class TestProductos(unittest.TestCase):
 	
